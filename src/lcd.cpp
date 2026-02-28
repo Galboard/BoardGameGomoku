@@ -1,5 +1,6 @@
 #include "../include/lcd.h"
 
+#include <cstdint>
 #include <stdexcept>
 #include <cstring>
 #include <unistd.h>
@@ -43,6 +44,14 @@ void lcd::render_rectangle(int width, int height, int x, int y, uint32_t color) 
             if (ix >= 0 && ix < 800 && iy >= 0 && iy < 480) {
                 render_pixel(x, y, color);
             }
+        }
+    }
+}
+
+void lcd::clear(uint32_t color) {
+    for (int y = 0; y < 480; ++y) {
+        for (int x = 0; x < 800; ++x) {
+             render_pixel(x, y, color);
         }
     }
 }

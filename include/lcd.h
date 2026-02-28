@@ -14,6 +14,7 @@ public:
     void render_pixel(int x, int y, uint32_t color);
     void show();
     void render_rectangle(int width, int height, int x, int y, uint32_t color);
+    void clear(uint32_t color);
 private:
     int dev_fd;
     int* lptr;
