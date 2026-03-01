@@ -11,6 +11,8 @@ add_executable(gomoku main.cpp)
 
 target_sources(gomoku PRIVATE
     src/lcd.cpp
+    src/image.cpp
+    src/event.cpp
 )
 
 # 2. 包含头文件目录
