@@ -7,7 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 1. 添加源文件
-add_executable(gomoku main.cpp src/lcd.cpp)
+add_executable(gomoku main.cpp)
+
+target_sources(gomoku PRIVATE
+    src/lcd.cpp
+)
 
 # 2. 包含头文件目录
 target_include_directories(gomoku PRIVATE 

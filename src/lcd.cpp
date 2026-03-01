@@ -39,10 +39,22 @@ void lcd::show() {
 }
 
 void lcd::render_rectangle(int width, int height, int x, int y, uint32_t color) {
-    for (int iy = y; iy < y + height; ++y) {
-        for (int ix = x; ix < x + width; ++x) {
+    for (int iy = y; iy < y + height; ++iy) {
+        for (int ix = x; ix < x + width; ++ix) {
             if (ix >= 0 && ix < 800 && iy >= 0 && iy < 480) {
-                render_pixel(x, y, color);
+                render_pixel(ix, iy, color);
+            }
+        }
+    }
+}
+
+void lcd::render_circle(int radius, int x, int y, uint32_t color) {
+    for (int iy = y - radius; iy < y + radius; ++iy) {
+        for (int ix = x - radius; ix < x + radius; ++ix) {
+            if (ix >= 0 && ix < 800 && iy >= 0 && iy < 480) {
+                if ((ix - x) * (ix - x) + (iy - y) * (iy - y) <= (radius * radius)) {
+                    render_pixel(ix, iy, color);
+                }
             }
         }
     }
@@ -51,7 +63,12 @@ void lcd::render_rectangle(int width, int height, int x, int y, uint32_t color) 
 void lcd::clear(uint32_t color) {
     for (int y = 0; y < 480; ++y) {
         for (int x = 0; x < 800; ++x) {
-             render_pixel(x, y, color);
+            render_pixel(x, y, color);
         }
     }
+}
+
+lcd& lcd::get_instance(const std::string& dev_path) {
+    static lcd instance(dev_path);
+    return instance;
 }
