@@ -3,54 +3,58 @@
 
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 #include "../include/lcd.h"
 
-#pragma pack(push, 1)
-
-struct BmpFileHeader {
-    uint16_t file_type;      
-    uint32_t file_size;      
-    uint16_t reserved1;      
-    uint16_t reserved2;      
-    uint32_t offset_data;    
-};
-
-struct BmpInfoHeader {
-    uint32_t size;           
-    int32_t  width;          
-    int32_t  height;         
-    uint16_t planes;         
-    uint16_t bit_count;      
-    uint32_t compression;    
-    uint32_t size_image;     
-    int32_t  x_pixels_per_meter; 
-    int32_t  y_pixels_per_meter; 
-    uint32_t colors_used;    
-    uint32_t colors_important; 
-};
-
-#pragma pack(pop)
-
-class BmpImage {
+// 图像数据类 (纯数据载体)
+class Image {
 public:
-    explicit BmpImage(const std::string& file_path);
-    ~BmpImage();
+    explicit Image(const std::string& file_path);
+    ~Image();
 
-    BmpImage(const BmpImage&) = delete;
-    BmpImage& operator=(const BmpImage&) = delete;
+    // 禁用拷贝，防止指针二次释放
+    Image(const Image&) = delete;
+    Image& operator=(const Image&) = delete;
 
-    int get_width() const { return info_header_.width; }
-    int get_height() const { return std::abs(info_header_.height); }
-    uint16_t get_bit_depth() const { return info_header_.bit_count; }
-
-    // 绘制时不绑定特定的 LCD 对象，通过参数传入解耦
-    void draw_to_lcd(Lcd& screen, int start_x = 0, int start_y = 0);
+    int get_width() const { return width_; }
+    int get_height() const { return height_; }
+    
+    // 将当前图像画到屏幕上
+    void draw(Lcd& screen, int start_x = 0, int start_y = 0);
 
 private:
-    BmpFileHeader file_header_;
-    BmpInfoHeader info_header_;
-    
-    unsigned char* pixel_data_; 
+    int width_;
+    int height_;
+    int bit_count_;
     size_t data_size_;
     int row_bytes_;
+    bool is_bottom_up_;     // 记录图片是否是倒置存储
+    unsigned char* pixel_data_;
+};
+
+// 图像管理器 (全局单例 - 享元模式)
+class ImageManager {
+public:
+    static ImageManager& get_instance();
+
+    ImageManager(const ImageManager&) = delete;
+    ImageManager& operator=(const ImageManager&) = delete;
+
+    // 预加载并缓存图片
+    void preload(const std::string& file_path);
+
+    // 获取图片对象指针
+    Image* get_image(const std::string& file_path);
+
+    // 快捷绘制接口：直接根据路径画图
+    void draw_image(Lcd& screen, const std::string& file_path, int start_x = 0, int start_y = 0);
+
+    // 清理缓存，释放所有图片占用的内存
+    void clear_cache();
+
+private:
+    ImageManager() = default;
+    ~ImageManager();
+
+    std::unordered_map<std::string, Image*> image_cache_;
 };

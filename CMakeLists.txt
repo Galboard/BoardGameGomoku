@@ -13,6 +13,8 @@ target_sources(gomoku PRIVATE
     src/lcd.cpp
     src/image.cpp
     src/event.cpp
+    src/ui.cpp
+    src/font.cpp
 )
 
 # 2. 包含头文件目录

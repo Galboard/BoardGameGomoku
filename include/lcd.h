@@ -25,6 +25,8 @@ public:
     int get_width() const { return screen_width_; }
     int get_height() const { return screen_height_; }
 
+    uint32_t get_pixel(int x, int y) const;
+
 private:
     explicit Lcd(const std::string& dev_path);
     

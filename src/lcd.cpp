@@ -96,3 +96,11 @@ Lcd& Lcd::get_instance(const std::string& dev_path) {
     static Lcd instance(dev_path);
     return instance;
 }
+
+// 获取屏幕缓冲区的当前像素颜色
+uint32_t Lcd::get_pixel(int x, int y) const {
+    if (x >= 0 && x < screen_width_ && y >= 0 && y < screen_height_) {
+        return *(back_lptr_ + screen_width_ * y + x);
+    }
+    return 0; // 越界返回黑色
+}

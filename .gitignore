@@ -1,7 +1,6 @@
 # 忽略 build 目录及其内部所有文件
 build/
-
+assets/
 # 也可以顺便忽略可能产生的编译数据库或缓存文件
 compile_commands.json
 .cache/
-assets/
